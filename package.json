@@ -1,0 +1,25 @@
+{
+  "name": "code.p",
+  "version": "0.0.1",
+  "description": "one spider for chinese poetry and article",
+  "main": "main.js",
+  "author": "Lynch HSU <Gernischt@gmail.com> (http://shy07.com/)",
+  "license": "MIT",
+  "scripts": {
+    "fetch": "node ./lib/main.js",
+    "preview": "node ./lib/server.js",
+    "build": "babel ./src -d ./lib --presets=es2015,es2017"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.1",
+    "express": "^4.15.3",
+    "lodash": "^4.17.4",
+    "progress": "^2.0.0",
+    "superagent": "^3.5.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2017": "^6.24.1"
+  }
+}
