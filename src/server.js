@@ -29,7 +29,7 @@ $H(lists).keys().each((list) => {
 })
 
 app.all('*', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Origin', _config.server.orgin)
   res.header('Access-Control-Allow-Methods', 'GET')
   res.header('Access-Control-Allow-Headers', 'x-access-token')
 
