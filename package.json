@@ -6,6 +6,7 @@
   "author": "Lynch HSU <Gernischt@gmail.com> (http://shy07.com/)",
   "license": "MIT",
   "scripts": {
+    "start": "node ./lib/server.js",
     "fetch": "node ./lib/main.js",
     "preview": "node ./lib/server.js",
     "build": "babel ./src -d ./lib --presets=es2015,es2017"
