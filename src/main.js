@@ -40,6 +40,9 @@ function makePoetry (url, next, error) {
 
   const makeContent = ($) => {
     let content = $.text().trim()
+    $R(9312, 9371).each(i => {
+      content = content.gsub(String.fromCodePoint(i), '\n')
+    })
     return content.gsub(/\(/, '（')
                   .gsub(/\)/, '）')
                   .gsub(/（[^（）]*）/, '')
@@ -75,7 +78,7 @@ function makePoetry (url, next, error) {
                                     .gsub(/。。。。。/, '……')
                                     .gsub(/。。。。/, '……')
                                     .gsub(/。。。/, '……')
-    $R(9312, 9351).each(i => {
+    $R(9312, 9371).each(i => {
       commits = commits.gsub(String.fromCodePoint(i), '\n')
     })
 
@@ -88,6 +91,7 @@ function makePoetry (url, next, error) {
     if (title === '') return
     title = title.split('/').first()
                             .gsub(/（[^（）]*）/, '')
+                            .gsub(/〔[^〔〕]*〕/, '')
                             .gsub(/[，。·－]/, ' ')
                             .gsub(/[、《》]/, '')
 

@@ -2,6 +2,7 @@
 import express from 'express'
 import fs from 'fs'
 import _ from 'lodash'
+const Font = require('fonteditor-core').Font;
 
 import { langPH } from './langExt'
 const $H = langPH
@@ -9,6 +10,7 @@ const $H = langPH
 import _config from '../config.json'
 
 const app = express()
+const buffer = fs.readFileSync('./font/SentyTang.ttf')
 
 let poetryList = []
 let titleList = {}
@@ -27,6 +29,22 @@ $H(lists).keys().each((list) => {
   if (!fs.existsSync(filename)) return
   _.merge(lists[list], JSON.parse(fs.readFileSync(filename, {encoding: 'utf-8'})))
 })
+
+const getFont = (charSet) => {
+  let codeSet = charSet.toArray().uniq().inject([], (m, v) => {
+    m.push(v.codePointAt(0))
+    return m
+  })
+  let font = Font.create(buffer, {
+    type: 'ttf', // support ttf,woff,eot,otf,svg
+    subset: codeSet, // only read `a`, `b` glyf
+    hinting: true, // save font hinting
+    compound2simple: true, // transform ttf compound glyf to simple
+    inflate: null, // inflate function for woff
+    combinePath: false, // for svg path
+  })
+  return font.toBase64({ type: 'ttf' })
+}
 
 app.all('*', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', _config.server.orgin)
@@ -51,10 +69,20 @@ get('/poetry/:id', (req, res) => {
     poetry = poetryList[req.params.id]
   }
   if (poetry === null) return ''
-  poetry.content = poetry.content.gsub(/[，！？：；:;。.、|＿_-—]/, ' ')
+  poetry.content = poetry.content.gsub(/[，！？：；:;。·.|＿_-—]/, ' ')
                                   .gsub(/[\\/、<>《》¤""''‘’“”{}【】{}●]|[a-zA-Z0-9\s]+/, '')
-                                  .split('\n')
-                                  .join(' ')
+                                  .strip()
+  poetry.title = poetry.title.gsub(/[，！？：；:;。.|＿_-—]/, ' ')
+                              .gsub(/[\\/、<>《》¤""''‘’“”{}【】{}●]|[a-zA-Z0-9\s]+/, '')
+                              .gsub(/〔[^〔〕]*〕/, '')
+                              .split('\n')
+                              .join(' ')
+  if (poetry.commits.length > 0) {
+    poetry.commits = poetry.commits.select(c => c !== '' )
+  }
+  //
+  poetry.font = getFont((`${poetry.content}${poetry.title}${poetry.author}賦`))
+
   return JSON.stringify(poetry, 'utf-8')
 })
 
@@ -65,6 +93,11 @@ get('/authors', (req, res) => {
   })
   html += '</ul>'
   return html
+})
+
+get('/articles', (req, res) => {
+  res.header('Content-Type', 'application/json')
+  return JSON.stringify(titleList, 'utef-8')
 })
 
 get('/author/:id', (req, res) => {

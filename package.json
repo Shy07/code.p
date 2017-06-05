@@ -14,6 +14,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.1",
     "express": "^4.15.3",
+    "fonteditor-core": "^0.0.37",
     "lodash": "^4.17.4",
     "progress": "^2.0.0",
     "superagent": "^3.5.2"
